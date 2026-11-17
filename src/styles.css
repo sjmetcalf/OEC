@@ -2864,3 +2864,113 @@ button.choice {
   caret-color: var(--ink);
   box-shadow: 0 0 0 1000px var(--page) inset;
 }
+
+/* Acronyms page */
+.acronym-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  margin-top: 1.25rem;
+}
+
+.acronym-search {
+  flex: 1 1 16rem;
+  min-width: 0;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 450;
+}
+
+.acronym-search:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.acronym-sort {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.acronym-sort .ghost[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.acronym-group {
+  margin-top: 1.75rem;
+}
+
+.acronym-group h2 {
+  margin: 0 0 0.6rem;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--ink-muted);
+}
+
+.acronym-list {
+  margin: 0;
+  border: 1px solid var(--hairline);
+  border-radius: 14px;
+  background: var(--card-warm);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+.acronym-row {
+  display: grid;
+  grid-template-columns: minmax(5.5rem, 9rem) minmax(0, 1fr);
+  gap: 1rem;
+  padding: 0.8rem 1.1rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.acronym-row:last-child {
+  border-bottom: 0;
+}
+
+.acronym-row dt {
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  background: var(--brand-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  overflow-wrap: anywhere;
+}
+
+.acronym-row dd {
+  display: grid;
+  gap: 0.2rem;
+  margin: 0;
+}
+
+.acronym-row dd strong {
+  font-weight: 550;
+}
+
+.acronym-row dd span {
+  color: var(--ink-muted);
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.acronym-empty,
+.acronym-note {
+  margin-top: 1.5rem;
+  color: var(--ink-muted);
+  font-size: 0.875rem;
+}
+
+@media (max-width: 560px) {
+  .acronym-row {
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
+  }
+}
