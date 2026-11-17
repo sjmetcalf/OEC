@@ -1,6 +1,7 @@
 import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import Account from "./Account.tsx";
 import AccountPage from "./AccountPage.tsx";
+import Acronyms from "./Acronyms.tsx";
 import { BackButton } from "./BackButton.tsx";
 import { BlurText, CountUp } from "./bits.tsx";
 import { Threads } from "./threads.tsx";
@@ -139,6 +140,7 @@ export default function App() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [tests, setTests] = useState<PracticeTest[]>([]);
   const [accountOpen, setAccountOpen] = useState(false);
+  const [acronymsOpen, setAcronymsOpen] = useState(false);
   const [leaveTo, setLeaveTo] = useState<"home" | "setup" | null>(null);
   const [deviceNote, setDeviceNote] = useState<{ tests: boolean; counts: boolean } | null>(null);
   const [authBusy, setAuthBusy] = useState(false);
@@ -338,6 +340,7 @@ export default function App() {
     setReading(null);
     setPickingExam(false);
     setAccountOpen(false);
+    setAcronymsOpen(false);
     scrollTop();
   }
 
@@ -466,6 +469,23 @@ export default function App() {
             </button>
           </div>
           <div className="topbar-actions">
+            <button
+              type="button"
+              className="text-button"
+              aria-pressed={acronymsOpen}
+              onClick={() => {
+                if (session?.mode === "exam" && !session.finished) return;
+                setSession(null);
+                setReading(null);
+                setPickingExam(false);
+                setAccountOpen(false);
+                setAcronymsOpen(true);
+                scrollTop();
+              }}
+              disabled={session?.mode === "exam" && !session.finished}
+            >
+              Acronyms
+            </button>
             {supabase && (
               <Account
                 email={userEmail}
@@ -475,6 +495,7 @@ export default function App() {
                 onSignIn={signIn}
                 onSignUp={signUp}
                 onOpen={() => {
+                  setAcronymsOpen(false);
                   setAccountOpen(true);
                   scrollTop();
                 }}
@@ -488,14 +509,21 @@ export default function App() {
         </div>
       </header>
       <main
-        className={session || pickingExam ? "is-quiz" : reading ? "is-reading" : undefined}
+        className={acronymsOpen ? "is-reading" : session || pickingExam ? "is-quiz" : reading ? "is-reading" : undefined}
       >
         {syncError && (session || reading || pickingExam || accountOpen) ? (
           <p className="sync-error" role="alert">
             Progress did not save. {syncError}
           </p>
         ) : null}
-        {accountOpen && userEmail ? (
+        {acronymsOpen ? (
+          <Acronyms
+            onBack={() => {
+              setAcronymsOpen(false);
+              scrollTop();
+            }}
+          />
+        ) : accountOpen && userEmail ? (
           <AccountPage
             email={userEmail}
             profile={profile}
