@@ -1,0 +1,45 @@
+name: Deploy
+
+# Builds every pull request and push to main, and deploys pushes to main to oec.fyi.
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      CF_SEND_TELEMETRY: "false"
+      # Supabase URL and publishable key are public values baked into the client bundle.
+      # Set them under Settings > Secrets and variables > Actions > Variables.
+      VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Type check
+        run: npx tsc -b
+      - name: Build
+        run: npx cf build
+      - name: Check deploy
+        run: npx cf deploy --prebuilt --mode production --dry-run
+      - name: Deploy to oec.fyi
+        if: github.event_name != 'pull_request'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "::warning::CLOUDFLARE_API_TOKEN secret is not set, so nothing was deployed."
+            exit 0
+          fi
+          npx cf deploy --prebuilt --mode production

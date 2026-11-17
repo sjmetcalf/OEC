@@ -9,4 +9,4 @@ npm install
 npm run dev
 ```
 
-Deploy with `npm run deploy` after `cf auth login`. The Worker name is `oec`, and `cloudflare.config.ts` attaches the `oec.fyi` custom domain.
+Pushes to `main` deploy automatically through GitHub Actions (`.github/workflows/deploy.yml`), using the `CLOUDFLARE_API_TOKEN` repository secret and the `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` repository variables. To deploy by hand, run `npm run deploy` after `cf auth login`. The Worker name is `oec`, and `cloudflare.config.ts` attaches the `oec.fyi` custom domain.
